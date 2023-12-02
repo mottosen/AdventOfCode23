@@ -6,7 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Remove="inputs_tmp\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Include="Day1.fs" />
+    <Compile Include="Day2.fs" />
     <Compile Include="InputLoader.fs" />
     <Compile Include="Program.fsx" />
   </ItemGroup>
