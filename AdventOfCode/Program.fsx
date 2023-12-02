@@ -11,9 +11,11 @@ let main (args : string[]) : int =
             raise (new ArgumentException("Program must take exactly one argument of the day to run."))
 
         if day = 1 then
+            //Day1.Star1 [| "1abc2" ; "pqr3stu8vwx" ; "a1b2c3d4e5f" ; "treb7uchet" |]
             Day1.Star1 (InputLoader.GetInputFromFile "inputs/day1.txt")
             |> printfn "Day 1, Star 1: %s"
         
+            //Day1.Star2 [| "two1nine" ; "eightwothree" ; "abcone2threexyz" ; "xtwone3four" ; "4nineeightseven2" ; "zoneight234" ; "7pqrstsixteen" |]
             Day1.Star2 (InputLoader.GetInputFromFile "inputs/day1.txt")
             |> printfn "Day 1, Star 2: %s"
 
