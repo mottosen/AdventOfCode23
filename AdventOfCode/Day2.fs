@@ -13,39 +13,30 @@ type Day2() =
             | "red" -> (Math.Max(r, a.Groups[1].Value |> int), g, b)
             | "green" -> (r, Math.Max(g, a.Groups[1].Value |> int), b)
             | "blue" -> (r, g, Math.Max(b, a.Groups[1].Value |> int))
-            | _ -> (r,g,b)
-        )
+            | _ -> (r,g,b))
 
     static member Star1 (input : string[]) : string =
-        let (red_limit,green_limit,blue_limit) = 12,13,14
+        let (rl,gl,bl) = 12,13,14
 
         let handleGame (game : string) : int =
             let gameID = Regex.Match(game, "Game (\d+):").Groups[1].Value |> int
 
-            let sets = Regex.Matches(game, "(((\d+) (blue|red|green)),? ?)+")
-
             let validGame =
-                Seq.map (fun (m : Match) -> Day2.handleSet m.Value) sets
-                |> Seq.forall (fun (r,g,b) -> r <= red_limit && g <= green_limit && b <= blue_limit)
+                Regex.Matches(game, "(((\d+) (blue|red|green)),? ?)+")
+                |> Seq.map (fun (m : Match) -> Day2.handleSet m.Value)
+                |> Seq.forall (fun (r,g,b) -> r <= rl && g <= gl && b <= bl)
 
             if validGame then gameID else 0
 
-        (0, input)
-        ||> Array.fold (fun acc game -> acc + (handleGame game))
-        |> string
-
-
+        (0, input) ||> Array.fold (fun acc game -> acc + (handleGame game)) |> string
 
     static member Star2 (input : string[]) : string =
         let handleGame (game : string) : int =
-            let sets = Regex.Matches(game, "(((\d+) (blue|red|green)),? ?)+")
-
             let (r,g,b) =
-                Seq.map (fun (m : Match) -> Day2.handleSet m.Value) sets
+                Regex.Matches(game, "(((\d+) (blue|red|green)),? ?)+")
+                |> Seq.map (fun (m : Match) -> Day2.handleSet m.Value)
                 |> Seq.fold (fun (ra,ga,ba) (r,g,b) -> (Math.Max(ra, r), Math.Max(ga, g), Math.Max(ba, b))) (0,0,0)
 
             r*g*b
 
-        (0, input)
-        ||> Array.fold (fun acc game -> acc + (handleGame game))
-        |> string
+        (0, input) ||> Array.fold (fun acc game -> acc + (handleGame game)) |> string

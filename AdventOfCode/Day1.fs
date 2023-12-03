@@ -8,11 +8,7 @@ type Day1() =
         |> fun seq -> int ((Seq.head seq).Value + (Seq.last seq).Value)
 
     static member Star1 (input : string[]) : string =
-        (0, input)
-        ||> Array.fold (fun acc s -> acc + (Day1.line2int s))
-        |> string
-
-
+        (0, input) ||> Array.fold (fun acc s -> acc + (Day1.line2int s)) |> string
 
     static member Star2 (input : string[]) : string =
         let fixLine (line : string) : string =
@@ -26,6 +22,4 @@ type Day1() =
             |> fun l -> Regex.Replace(l, "eight", "e8ight")
             |> fun l -> Regex.Replace(l, "nine", "n9ine")
 
-        (0, input)
-        ||> Array.fold (fun acc s -> acc + (s |> fixLine |> Day1.line2int))
-        |> string
+        (0, input) ||> Array.fold (fun acc s -> acc + (s |> fixLine |> Day1.line2int)) |> string
