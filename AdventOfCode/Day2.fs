@@ -34,6 +34,8 @@ type Day2() =
         ||> Array.fold (fun acc game -> acc + (handleGame game))
         |> string
 
+
+
     static member Star2 (input : string[]) : string =
         let handleGame (game : string) : int =
             let sets = Regex.Matches(game, "(((\d+) (blue|red|green)),? ?)+")

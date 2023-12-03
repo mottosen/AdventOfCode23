@@ -28,6 +28,15 @@ let main (args : string[]) : int =
             //Day2.Star2 (InputLoader.GetInputFromFile "inputs_real/day2.txt")
             |> printfn "Day 2, Star 2: %s"
 
+        if day = 3 then
+            Day3.Star1 (InputLoader.GetInputFromFile "inputs_test/day3_1.txt")
+            //Day3.Star1 (InputLoader.GetInputFromFile "inputs_real/day3.txt")
+            |> printfn "Day 3, Star 1: %s"
+        
+            Day3.Star2 (InputLoader.GetInputFromFile "inputs_test/day3_2.txt")
+            //Day3.Star2 (InputLoader.GetInputFromFile "inputs_real/day3.txt")
+            |> printfn "Day 3, Star 2: %s"
+
         0
     with
     | FileException m -> eprintfn "%s" m; 1

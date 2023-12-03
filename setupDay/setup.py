@@ -14,11 +14,16 @@ def main(args):
     day = int(args[1])
     
     if (advent_dir / f"inputs/day{day}.txt").is_file() or (advent_dir / f"Day{day}.fs").is_file():
-        print("some files already exist.")
+        print("some important files already exist.")
         return 1
 
-    file_out = advent_dir / f"inputs/Day{day}.txt"
-    with open(file_out, "w") as f:
+    with open(advent_dir / f"inputs_real/Day{day}.txt", "w") as f:
+        f.write("")
+
+    with open(advent_dir / f"inputs_test/Day{day}_1.txt", "w") as f:
+        f.write("")
+    
+    with open(advent_dir / f"inputs_test/Day{day}_2.txt", "w") as f:
         f.write("")
 
     shutil.copyfile(curr_dir / "NewDay.fs", advent_dir / f"Day{day}.fs")

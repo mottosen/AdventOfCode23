@@ -12,6 +12,8 @@ type Day1() =
         ||> Array.fold (fun acc s -> acc + (Day1.line2int s))
         |> string
 
+
+
     static member Star2 (input : string[]) : string =
         let fixLine (line : string) : string =
             Regex.Replace(line, "one", "o1ne")
