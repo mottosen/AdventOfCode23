@@ -27,11 +27,14 @@ type Day4() =
         input |> handleLines 0 0 |> string
 
     static member Star2 (input : string[]) : string =
-        let rec handleLines (copiedCards : int list) (idx : int) (lines : string[]) : int =
-            if idx = lines.Length then copiedCards |> List.length
+        let rec handleLines (processedCards : int) (copiedCards : int list) (idx : int) (lines : string[]) : int =
+            if idx = lines.Length then processedCards
             else
-                let copies = copiedCards |> List.filter (fun card -> card = idx) |> List.length in
-                let cardsWon = (Day4.checkCard idx lines) |> List.replicate (copies + 1) |> List.concat in
-                handleLines (idx :: cardsWon @ copiedCards) (idx + 1) (lines)
+                let cardCopies,filteredCopies =
+                    ((0,[]), copiedCards)
+                    ||> List.fold (fun (matches, filtered) card ->
+                        if card = idx then (matches + 1, filtered) else (matches, card :: filtered))
+                let cardsWon = (Day4.checkCard idx lines) |> List.replicate (cardCopies + 1) |> List.concat // optimize this? funtional hash table?
+                handleLines (processedCards + 1 + cardCopies) (cardsWon @ filteredCopies) (idx + 1) (lines)
 
-        input |> handleLines [] 0 |> string
+        input |> handleLines 0 [] 0 |> string
