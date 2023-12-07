@@ -64,6 +64,15 @@ let main (args : string[]) : int =
             //Day6.Star2 (InputLoader.GetInputFromFile "inputs_real/day6.txt")
             |> printfn "Day 6, Star 2: %s"
 
+        elif day = 7 then
+            Day7.Star1 (InputLoader.GetInputFromFile "inputs_test/day7_1.txt")
+            //Day7.Star1 (InputLoader.GetInputFromFile "inputs_real/day7.txt")
+            |> printfn "Day 7, Star 1: %s"
+        
+            Day7.Star2 (InputLoader.GetInputFromFile "inputs_test/day7_2.txt")
+            //Day7.Star2 (InputLoader.GetInputFromFile "inputs_real/day7.txt")
+            |> printfn "Day 7, Star 2: %s"
+
         else
             printfn "Day not solved yet."
         
