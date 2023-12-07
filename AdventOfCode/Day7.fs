@@ -9,48 +9,38 @@ type HandType = HighCard of Hand
                 | FullHouse of Hand | TwoPair of Hand | OnePair of Hand
 
 type Day7() =
-    static member Star1 (input : string[]) : string =
-        let parseChar (c : char) : int =
+    static member parseChar (c : char) (star : int) : int =
             match c with
-            | 'A' -> 14 | 'K' -> 13 | 'Q' -> 12 | 'J' -> 11 | 'T' -> 10 
-            | '1' -> 1 | '2' -> 2 | '3' -> 3 | '4' -> 4 | '5' -> 5 | '6' -> 6 | '7' -> 7 | '8' -> 8 | '9' -> 9
+            | 'A' -> 14 | 'K' -> 13 | 'Q' -> 12 | 'J' when star=1 -> 11 | 'T' -> 10 | 'J' when star=2 -> 1
+            |'2' -> 2 | '3' -> 3 | '4' -> 4 | '5' -> 5 | '6' -> 6 | '7' -> 7 | '8' -> 8 | '9' -> 9
 
-        let parseHand (hand : string) : HandType =
-            let rec helper (res : HandType) (foo : char) (nums : (char*int) list) : HandType =
-                match res with 
-                | FiveKind _ | FourKind _ | FullHouse _ | TwoPair _ -> res
-                | ThreeKind h -> 
-                    match nums with
-                    | [] -> res
-                    | (n,c) :: lst ->
-                        if n<>foo && c = 2 then helper (FullHouse h) n lst
-                        else helper res foo lst
-                | OnePair h ->
-                    match nums with
-                    | [] -> res
-                    | (n,c) :: lst ->
-                        if n<>foo && c = 3 then helper (FullHouse h) n lst
-                        elif n<>foo && c = 2 then helper (TwoPair h) n lst
-                        else helper res foo lst
-                | HighCard h ->
-                    match nums with
-                    | [] -> res
-                    | (n,c) :: lst ->
-                        if n<>foo && c = 5 then helper (FiveKind h) n lst
-                        elif n<>foo && c = 4 then helper (FourKind h) n lst
-                        elif n<>foo && c = 3 then helper (ThreeKind h) n lst
-                        elif n<>foo && c = 2 then helper (OnePair h) n lst
-                        else helper res foo lst
-
+    static member Star1 (input : string[]) : string =
+        let parseHand (hand : string) =
             let handParsed = hand |> Seq.toList
-            let bar = handParsed |> List.mapi (fun i c -> (c, handParsed[i..] |> List.filter (fun e -> e = c) |> List.length))
+            let handCounts = handParsed |> List.mapi (fun i c -> (c, handParsed[i..] |> List.filter (fun e -> e = c) |> List.length))
+                            |> List.distinctBy (fun (c,_) -> c) |> List.sortWith (fun (_,c1) (_,c2) -> compare c2 c1)
 
-            let baz = helper (HighCard handParsed) ' ' (bar |> Seq.toList)
-            baz
+            match handCounts with
+            | (_,c1) :: (_,c2) :: r ->
+                if c1 = 5 then FiveKind handParsed
+                elif c1 = 4 then FourKind handParsed
+                elif c1 = 3 then
+                    if c2 = 2 then FullHouse handParsed
+                    else ThreeKind handParsed
+                elif c1 = 2 then
+                    if c2 = 2 then TwoPair handParsed
+                    else OnePair handParsed
+                else HighCard handParsed
+            | (_,c) :: r ->
+                if c = 5 then FiveKind handParsed
+                elif c = 4 then FourKind handParsed
+                elif c = 3 then ThreeKind handParsed
+                elif c = 2 then OnePair handParsed
+                else HighCard handParsed
 
         let compareHands (ht1 : HandType) (ht2 : HandType) : int =
             let rec helper (h1 : char seq) (h2 : char seq) : int =
-                (0, h1,h2) |||> Seq.fold2 (fun acc c1 c2 -> if acc <> 0 then acc else (compare (parseChar c1) (parseChar c2)))
+                (0, h1,h2) |||> Seq.fold2 (fun acc c1 c2 -> if acc <> 0 then acc else (compare (Day7.parseChar c1 1) (Day7.parseChar c2 1)))
 
             match ht1 with
             | FiveKind h1 ->
@@ -69,60 +59,39 @@ type Day7() =
                 match ht2 with HighCard h2 -> helper h1 h2 | _ -> -1
 
         input |> Array.map (fun line ->
-            let foo = Regex.Match(line, "^(.*) (\d+)$")
-
-            (foo.Groups[1].Value |> parseHand, foo.Groups[2].Value |> int) // (hand, bid)
-            )
+            let parse = Regex.Match(line, "^(.*) (\d+)$")
+            (parse.Groups[1].Value |> parseHand, parse.Groups[2].Value |> int))
         |> Array.sortWith (fun (h1,_) (h2,_) -> compareHands h1 h2)
-        |> Array.mapi (fun i (_,b) -> b * (i+1))
+        |> Array.mapi (fun i (h,b) -> b*(i+1))
         |> Array.sum |> string
 
     static member Star2 (input : string[]) : string =
-        let parseChar (c : char) : int =
-            match c with
-            | 'A' -> 14 | 'K' -> 13 | 'Q' -> 12 | 'J' -> 1 | 'T' -> 10
-            | '1' -> 1 | '2' -> 2 | '3' -> 3 | '4' -> 4 | '5' -> 5 | '6' -> 6 | '7' -> 7 | '8' -> 8 | '9' -> 9
-
-        let parseHand (hand : string) : HandType =
-            let rec helper (res : HandType) (foo : char) (nums : (char*int) list) : HandType =
-                match res with 
-                | FiveKind _ | FourKind _ | FullHouse _ | TwoPair _ -> res
-                | ThreeKind h -> 
-                    match nums with
-                    | [] -> res
-                    | (n,c) :: lst ->
-                        if n<>foo && c = 4 then helper (FourKind h) n lst
-                        elif n<>foo && c = 2 then helper (FullHouse h) n lst
-                        else helper res foo lst
-                | OnePair h ->
-                    match nums with
-                    | [] -> res
-                    | (n,c) :: lst ->
-                        if n<>foo && c = 3 then helper (FullHouse h) n lst
-                        elif n<>foo && c = 2 then helper (TwoPair h) n lst
-                        else helper res foo lst
-                | HighCard h ->
-                    match nums with
-                    | [] -> res
-                    | (n,c) :: lst ->
-                        if n<>foo && c = 5 then helper (FiveKind h) n lst
-                        elif n<>foo && c = 4 then helper (FourKind h) n lst
-                        elif n<>foo && c = 3 then helper (ThreeKind h) n lst
-                        elif n<>foo && c = 2 then helper (OnePair h) n lst
-                        else helper res foo lst
-
+        let parseHand (hand : string) =
             let handParsed = hand |> Seq.toList
-            printfn "\n%A" (sprintf "%A" handParsed)
-            let bar = handParsed |> List.mapi (fun i c -> (c, handParsed[i..] |> List.filter (fun e -> e = c || e = 'J') |> List.length))
-            printfn "%A" (sprintf "%A" bar)
+            let handCounts = handParsed |> List.mapi (fun i c -> (c, handParsed[i..] |> List.filter (fun e -> e = c || e = 'J') |> List.length))
+                            |> List.distinctBy (fun (c,_) -> c) |> List.sortWith (fun (_,c1) (_,c2) -> compare c2 c1)
 
-            let baz = helper (HighCard handParsed) ' ' (bar |> Seq.toList)
-            printfn "%A" baz
-            baz
+            match handCounts with
+            | (_,c1) :: (_,c2) :: r ->
+                if c1 = 5 then FiveKind handParsed
+                elif c1 = 4 then FourKind handParsed
+                elif c1 = 3 then
+                    if c2 = 2 then FullHouse handParsed
+                    else ThreeKind handParsed
+                elif c1 = 2 then
+                    if c2 = 2 then TwoPair handParsed
+                    else OnePair handParsed
+                else HighCard handParsed
+            | (_,c) :: r ->
+                if c = 5 then FiveKind handParsed
+                elif c = 4 then FourKind handParsed
+                elif c = 3 then ThreeKind handParsed
+                elif c = 2 then OnePair handParsed
+                else HighCard handParsed
 
         let compareHands (ht1 : HandType) (ht2 : HandType) : int =
             let rec helper (h1 : char seq) (h2 : char seq) : int =
-                (0, h1,h2) |||> Seq.fold2 (fun acc c1 c2 -> if acc <> 0 then acc else (compare (parseChar c1) (parseChar c2)))
+                (0, h1,h2) |||> Seq.fold2 (fun acc c1 c2 -> if acc <> 0 then acc else (compare (Day7.parseChar c1 2) (Day7.parseChar c2 2)))
 
             match ht1 with
             | FiveKind h1 ->
@@ -141,10 +110,8 @@ type Day7() =
                 match ht2 with HighCard h2 -> helper h1 h2 | _ -> -1
 
         input |> Array.map (fun line ->
-            let foo = Regex.Match(line, "^(.*) (\d+)$")
-
-            (foo.Groups[1].Value |> parseHand, foo.Groups[2].Value |> int) // (hand, bid)
-            )
+            let parse = Regex.Match(line, "^(.*) (\d+)$")
+            (parse.Groups[1].Value |> parseHand, parse.Groups[2].Value |> int))
         |> Array.sortWith (fun (h1,_) (h2,_) -> compareHands h1 h2)
-        |> Array.mapi (fun i (_,b) -> b * (i+1))
+        |> Array.mapi (fun i (h,b) -> b*(i+1))
         |> Array.sum |> string
