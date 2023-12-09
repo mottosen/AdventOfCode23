@@ -74,13 +74,22 @@ let main (args : string[]) : int =
             |> printfn "Day 7, Star 2: %s"
 
         elif day = 8 then
-            //Day8.Star1 (InputLoader.GetInputFromFile "inputs_test/day8_1.txt")
-            Day8.Star1 (InputLoader.GetInputFromFile "inputs_real/day8.txt")
+            Day8.Star1 (InputLoader.GetInputFromFile "inputs_test/day8_1.txt")
+            //Day8.Star1 (InputLoader.GetInputFromFile "inputs_real/day8.txt")
             |> printfn "Day 8, Star 1: %s"
         
-            //Day8.Star2 (InputLoader.GetInputFromFile "inputs_test/day8_2.txt")
-            Day8.Star2 (InputLoader.GetInputFromFile "inputs_real/day8.txt")
+            Day8.Star2 (InputLoader.GetInputFromFile "inputs_test/day8_2.txt")
+            //Day8.Star2 (InputLoader.GetInputFromFile "inputs_real/day8.txt")
             |> printfn "Day 8, Star 2: %s"
+
+        elif day = 9 then
+            Day9.Star1 (InputLoader.GetInputFromFile "inputs_test/day9_1.txt")
+            //Day9.Star1 (InputLoader.GetInputFromFile "inputs_real/day9.txt")
+            |> printfn "Day 9, Star 1: %s"
+        
+            Day9.Star2 (InputLoader.GetInputFromFile "inputs_test/day9_2.txt")
+            //Day9.Star2 (InputLoader.GetInputFromFile "inputs_real/day9.txt")
+            |> printfn "Day 9, Star 2: %s"
 
         else
             printfn "Day not solved yet."
